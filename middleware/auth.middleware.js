@@ -1,41 +1,29 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
-const authMiddleware = async (req, res, next) => {
-  try {
-    // Token
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+const authMiddleware = async (req,res,next) => {
+  try{
+   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Access denied. No token provided.",
-      });
-    }
+   if(!token){
+    return res.status(401).json({message:"No token provided"});
+   }
 
-    // Verify Token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Find User
-    const user = await User.findById(decoded.id).select("-password");
+   const user = await User.findById(decoded.id).select("-password");
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found.",
-      });
-    }
-
-    // Save user in request
-    req.user = user;
-
+   if(!user){
+    return res.status(404).json({message:"User not found"});
+   }
+   
+     // Save user in request
+   req.user = user;
     next();
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired token.",
-    });
+  }catch(error){
+    console.error(error);
+    res.status(401).json({message:"Unauthorized"});
   }
-};
+}
 
 export default authMiddleware;

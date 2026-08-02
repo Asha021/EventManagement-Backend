@@ -5,14 +5,19 @@ import dotenv from 'dotenv';
 import auth from './routes/auth.route.js'
 import event from "./routes/event.route.js";
 import registerEventsRoute from "./routes/registration.route.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config()
 const app = express();
+app.use(cookieParser());
 connectDb();
 app.use(express.json())
 
 app.use(cors({
-     origin: "http://localhost:5173",
+     origin: [
+         "http://localhost:5173",
+         "http://localhost:5174",
+     ],
     credentials: true,
 }));
 

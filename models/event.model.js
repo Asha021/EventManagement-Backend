@@ -18,13 +18,13 @@ const EventSchema = new mongoose.Schema(
       trim: true,
     },
     date: {
-  type: Date,
-  required: true,
-},
-time: {
-  type: String,
-  required: true,
-},
+      type: Date,
+      required: true,
+   },
+   time: {
+      type: String,
+      required: true,
+  },
     description: {
       type: String,
       required: true,
